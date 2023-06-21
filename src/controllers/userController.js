@@ -3,6 +3,7 @@ const HandleError = require("./handleError");
 const Security = require("../services/securityProvider");
 const security = new Security();
 const CryptoJS = require("crypto-js");
+const { ObjectId } = require("mongodb");
 
 async function getUsers() {
   const db = await databaseConection.GetConection();
@@ -10,6 +11,18 @@ async function getUsers() {
   const users = await db.collection("Users").find({}).toArray();
 
   return users;
+}
+
+async function getUserById(id) {
+  const db = await databaseConection.GetConection();
+
+  if (!ObjectId.isValid(id)) {
+    throw new GetUserByIdException(GetUserByIdException.errorInvalidFormatId);
+  }
+
+  const user = await db.collection("Users").findOne({_id: new ObjectId(id)});
+
+  return user;
 }
 
 async function createUser(name, phone, email, password) {
@@ -58,8 +71,17 @@ async function loginByEmail(email, password) {
 
 class GetUsersException extends HandleError {
   static errorDataBase = "ERROR_DATABASE";
+
   constructor(code){
     super("Get users list", code);
+  }
+}
+
+class GetUserByIdException extends HandleError {
+  static errorInvalidFormatId = "INVALID_FORMAT_ID";
+
+  constructor(code) {
+    super("Get user by id", code);
   }
 }
 
@@ -84,6 +106,7 @@ module.exports = {
   createUser,
   loginByEmail,
   getUsers,
+  getUserById,
   LoginByEmailException,
   CreateUserException,
   GetUsersException
