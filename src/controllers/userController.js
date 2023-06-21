@@ -109,5 +109,6 @@ module.exports = {
   getUserById,
   LoginByEmailException,
   CreateUserException,
-  GetUsersException
+  GetUsersException,
+  GetUserByIdException
 };

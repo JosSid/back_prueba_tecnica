@@ -6,7 +6,8 @@ const {
   loginByEmail,
   LoginByEmailException,
   GetUsersException,
-  getUserById
+  getUserById,
+  GetUserByIdException
 } = require("../controllers/userController");
 const usersRouter = express.Router();
 
@@ -37,12 +38,12 @@ usersRouter.get("/:id",async (request, response) => {
   let response_result = null;
   try {
     response_user = await getUserById(request.params.id);
-    response_result = GetUsersException.success;
+    response_result = GetUserByIdException.success;
   } catch (error) {
     if (error.code != null) {
       response_result = error.code;
     } else {
-      response_result = GetUsersException.unknownError;
+      response_result = GetUserByIdException.unknownError;
     }
   }
 
