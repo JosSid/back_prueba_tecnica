@@ -4,6 +4,14 @@ const Security = require("../services/securityProvider");
 const security = new Security();
 const CryptoJS = require("crypto-js");
 
+async function getUsers() {
+  const db = await databaseConection.GetConection();
+
+  const users = await db.collection("Users").find({}).toArray();
+
+  return users;
+}
+
 async function createUser(name, phone, email, password) {
   const db = await databaseConection.GetConection();
 
@@ -48,6 +56,13 @@ async function loginByEmail(email, password) {
   return user;
 }
 
+class GetUsersException extends HandleError {
+  static errorDataBase = "ERROR_DATABASE";
+  constructor(code){
+    super("Get users list", code);
+  }
+}
+
 class LoginByEmailException extends HandleError {
   static errorIncorrectPassword = "INCORRECT_PASSWORD";
   static errorIncorrectEmail = "UNKNOWN_EMAIL";
@@ -68,6 +83,8 @@ class CreateUserException extends HandleError {
 module.exports = {
   createUser,
   loginByEmail,
+  getUsers,
   LoginByEmailException,
   CreateUserException,
+  GetUsersException
 };

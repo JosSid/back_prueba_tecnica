@@ -7,9 +7,9 @@ var DbConnection = function () {
 
   async function DbConnect() {
     try {
-      console.log("DB Connect");
+      console.log(`Connected to ${databaseName} DB`);
       var _client = new MongoClient(URL, { useUnifiedTopology: true });
-      await _client.connect();
+      await _client.connect(URL);
       //let _db = await MongoClient.connect(URL);
 
       return _client;
