@@ -5,6 +5,7 @@ class HandleError extends Error {
   static expiredToken = "EXPIRED_TOKEN";
   static notEnoutghPermissions = "NOT_ENOUTGH_PERMISSIONS";
   static unknownError = "UNKNOWN_ERROR";
+  static errorInvalidFormatId = "INVALID_FORMAT_ID";
 
   constructor(petitionName, errorCode) {
     super("Error in " + petitionName + ": " + errorCode);

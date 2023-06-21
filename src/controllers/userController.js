@@ -48,6 +48,20 @@ async function createUser(name, phone, email, password) {
   return createdUser;
 }
 
+async function deleteUser(id) {
+
+  if (!ObjectId.isValid(id)) {
+    throw new DeleteUserException(DeleteUserException.errorInvalidFormatId);
+  }
+
+  const db = await databaseConection.GetConection();
+
+  const deletedUser = await db.collection("Users").deleteOne({_id: new ObjectId(id)});
+
+  return deletedUser;
+
+}
+
 async function loginByEmail(email, password) {
   let db = await databaseConection.GetConection();
 
@@ -78,8 +92,8 @@ class GetUsersException extends HandleError {
 }
 
 class GetUserByIdException extends HandleError {
-  static errorInvalidFormatId = "INVALID_FORMAT_ID";
-
+  static userNotFound = "USER_NOT_FOUND";
+  
   constructor(code) {
     super("Get user by id", code);
   }
@@ -102,13 +116,23 @@ class CreateUserException extends HandleError {
   }
 }
 
+class DeleteUserException extends HandleError {
+
+  constructor(code) {
+    super("Delete User ", code);
+  }
+  
+}
+
 module.exports = {
   createUser,
   loginByEmail,
   getUsers,
   getUserById,
+  deleteUser,
   LoginByEmailException,
   CreateUserException,
   GetUsersException,
-  GetUserByIdException
+  GetUserByIdException,
+  DeleteUserException
 };
