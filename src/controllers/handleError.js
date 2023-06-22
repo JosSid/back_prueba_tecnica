@@ -6,6 +6,8 @@ class HandleError extends Error {
   static notEnoutghPermissions = "NOT_ENOUTGH_PERMISSIONS";
   static unknownError = "UNKNOWN_ERROR";
   static errorInvalidFormatId = "INVALID_FORMAT_ID";
+  static emailAlreadyInUser = "EMAIL_ALREADY_IN_USER";
+  static errorInvalidEmail = "ERROR_INVALID_EMAIL";
 
   constructor(petitionName, errorCode) {
     super("Error in " + petitionName + ": " + errorCode);

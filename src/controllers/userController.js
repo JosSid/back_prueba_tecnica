@@ -26,6 +26,13 @@ async function getUserById(id) {
 }
 
 async function createUser(name, phone, email, password) {
+
+  const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+
+  if(!validEmail.test(email)){
+    throw new CreateUserException(CreateUserException.errorInvalidEmail)
+  }
+
   const db = await databaseConection.GetConection();
 
   const doesEmailExist = await db.collection("Users").findOne({
@@ -54,7 +61,19 @@ async function updateUser(id, body) {
   
   const {name, email, phone, password} = body;
 
+  const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+
+  if(!validEmail.test(email)){
+    throw new UpdateUserException(UpdateUserException.errorInvalidEmail)
+  }
+
   const db = await databaseConection.GetConection();
+
+  const doesEmailExist = await db.collection("Users").findOne({email: email});
+
+  if (doesEmailExist && doesEmailExist._id.toString() !== new ObjectId(id).toString()){
+    throw new UpdateUserException(UpdateUserException.emailAlreadyInUser);
+  }
 
   const objectUpdater = {};
 
@@ -129,7 +148,6 @@ class LoginByEmailException extends HandleError {
 }
 
 class CreateUserException extends HandleError {
-  static emailAlreadyInUser = "EMAIL_ALREADY_IN_USER";
 
   constructor(code) {
     super("Create User ", code);

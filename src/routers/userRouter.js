@@ -159,7 +159,7 @@ usersRouter.put("/:id",async (request, response) => {
       response_result = error.code;
       response_status = 400;
     } else {
-      response_result = LoginByEmailException.unknownError;
+      response_result = UpdateUserException.unknownError;
       response_status = 500;
     }
     
