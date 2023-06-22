@@ -137,7 +137,7 @@ usersRouter.post('/login', async (request, response) => {
     }
   }
   response.status(response_status).json({
-    user: response_user,
+    token: response_user,
     result: response_result,
   });
 });

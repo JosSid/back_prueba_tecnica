@@ -4,6 +4,7 @@ const Security = require("../services/securityProvider");
 const security = new Security();
 const CryptoJS = require("crypto-js");
 const { ObjectId } = require("mongodb");
+const jwt = require('jsonwebtoken');
 
 async function getUsers() {
   const db = await databaseConection.GetConection();
@@ -119,7 +120,11 @@ async function loginByEmail(email, password) {
     );
   }
 
-  return user;
+  const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET, {
+    expiresIn: "1d"
+  });
+
+  return token;
 }
 
 class GetUsersException extends HandleError {
