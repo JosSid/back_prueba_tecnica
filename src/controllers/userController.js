@@ -48,6 +48,26 @@ async function createUser(name, phone, email, password) {
   return createdUser;
 }
 
+async function updateUser(id, body) {
+
+  const user = await getUserById(id);
+  
+  const {name, email, phone, password} = body;
+
+  const db = await databaseConection.GetConection();
+
+  const objectUpdater = {};
+
+  name ? objectUpdater.name = name : objectUpdater;
+  email ? objectUpdater.email = email : objectUpdater;
+  phone ? objectUpdater.phone = phone : objectUpdater;
+  password ? objectUpdater.password = security.encryptData(password) : objectUpdater;
+
+  const updatedUser = await db.collection("Users").updateOne({_id: user._id},{$set : objectUpdater});
+
+  return updatedUser
+}
+
 async function deleteUser(id) {
 
   if (!ObjectId.isValid(id)) {
@@ -116,6 +136,13 @@ class CreateUserException extends HandleError {
   }
 }
 
+class UpdateUserException extends HandleError {
+
+  constructor(code) {
+    super("Update User ", code);
+  }
+}
+
 class DeleteUserException extends HandleError {
 
   constructor(code) {
@@ -129,10 +156,12 @@ module.exports = {
   loginByEmail,
   getUsers,
   getUserById,
+  updateUser,
   deleteUser,
   LoginByEmailException,
   CreateUserException,
   GetUsersException,
   GetUserByIdException,
+  UpdateUserException,
   DeleteUserException
 };

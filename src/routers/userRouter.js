@@ -4,11 +4,13 @@ const {
   CreateUserException,
   getUsers,
   deleteUser,
+  updateUser,
   loginByEmail,
   LoginByEmailException,
   GetUsersException,
   getUserById,
   GetUserByIdException,
+  UpdateUserException,
   DeleteUserException,
 } = require('../controllers/userController');
 const usersRouter = express.Router();
@@ -138,6 +140,36 @@ usersRouter.post('/login', async (request, response) => {
     user: response_user,
     result: response_result,
   });
+});
+
+usersRouter.put("/:id",async (request, response) => {
+  let response_user = null;
+  let response_result = null;
+  let response_status = null;
+
+  try {
+    response_user = await updateUser(request.params.id,request.body);
+
+    response_result = UpdateUserException.success;
+
+    response_status = 200;
+  } catch(error) {
+    console.log(error)
+    if (error.code != null) {
+      response_result = error.code;
+      response_status = 400;
+    } else {
+      response_result = LoginByEmailException.unknownError;
+      response_status = 500;
+    }
+    
+  }
+
+  response.status(response_status).json({
+    user: response_user,
+    result: response_result
+  });
+  
 });
 
 usersRouter.delete('/:id', async (request, response) => {
