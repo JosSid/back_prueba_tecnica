@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node ./src/init.js",
     "start-dev": "nodemon --exec node ./src/init.js"
   },
   "keywords": [],

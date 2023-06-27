@@ -30,8 +30,14 @@ async function createUser(name, phone, email, password) {
 
   const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
 
+  const validPhone = /^\d{9}$/;
+
   if(!validEmail.test(email)){
     throw new CreateUserException(CreateUserException.errorInvalidEmail)
+  }
+
+  if(!validPhone.test(phone)) {
+    throw new CreateUserException(CreateUserException.errorInvalidPhone)
   }
 
   const db = await databaseConection.GetConection();
@@ -49,6 +55,8 @@ async function createUser(name, phone, email, password) {
     phone: phone,
     email: email,
     password: security.encryptData(password),
+    createdAt: new Date().toUTCString(),
+    updatedAt: new Date().toUTCString(),
   };
 
   const createdUser = await db.collection("Users").insertOne(newUser);
@@ -64,8 +72,14 @@ async function updateUser(id, body) {
 
   const validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
 
-  if(!validEmail.test(email)){
+  const validPhone = /^\d{9}$/;
+
+  if(email && !validEmail.test(email)){
     throw new UpdateUserException(UpdateUserException.errorInvalidEmail)
+  }
+
+  if(phone && !validPhone.test(phone)) {
+    throw new CreateUserException(CreateUserException.errorInvalidPhone)
   }
 
   const db = await databaseConection.GetConection();
@@ -82,6 +96,7 @@ async function updateUser(id, body) {
   email ? objectUpdater.email = email : objectUpdater;
   phone ? objectUpdater.phone = phone : objectUpdater;
   password ? objectUpdater.password = security.encryptData(password) : objectUpdater;
+  objectUpdater.updatedAt = new Date().toUTCString();
 
   const updatedUser = await db.collection("Users").updateOne({_id: user._id},{$set : objectUpdater});
 

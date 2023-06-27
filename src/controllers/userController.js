@@ -22,6 +22,8 @@ class UserController {
   
     try {
       response_users = await getUsers();
+      const usersWithoutPassword = response_users.map(({ password, ...user }) => user);
+      response_users = usersWithoutPassword;
       response_result = GetUsersException.success;
       response_status = 200;
     } catch (error) {
@@ -47,11 +49,12 @@ class UserController {
     let response_status = null;
     try {
       response_user = await getUserById(request.params.id);
-  
       if (response_user === null) {
         response_result = GetUserByIdException.userNotFound;
         response_status = 404;
       } else {
+        const { password, ...userWithoutPassword } = response_user;
+        response_user = userWithoutPassword;
         response_result = GetUserByIdException.success;
         response_status = 200;
       }
