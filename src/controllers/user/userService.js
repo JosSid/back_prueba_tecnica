@@ -123,14 +123,14 @@ async function loginByEmail(email, password) {
     email: email,
   });
   if (user == null) {
-    throw new LoginByEmailException(LoginByEmailException.errorIncorrectEmail);
+    throw new LoginByEmailException(LoginByEmailException.errorIncorrectCredentials);
   }
   const bytes = security.decryptData(user.password);
   const originalText = bytes.toString(CryptoJS.enc.Utf8);
 
   if (originalText != password) {
     throw new LoginByEmailException(
-      LoginByEmailException.errorIncorrectPassword
+      LoginByEmailException.errorIncorrectCredentials
     );
   }
 

@@ -17,9 +17,7 @@ class GetUsersException extends HandleError {
   };
   
   class LoginByEmailException extends HandleError {
-    static errorIncorrectPassword = "INCORRECT_PASSWORD";
-    static errorIncorrectEmail = "UNKNOWN_EMAIL";
-    //Por seguridad es correcto?
+    static errorIncorrectCredentials = "INCORRECT_CREDENTIALS";
     constructor(code) {
       super("Login By Email", code);
     };
