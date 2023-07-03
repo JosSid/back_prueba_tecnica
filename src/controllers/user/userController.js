@@ -1,18 +1,23 @@
 const express = require('express');
 const {
   createUser,
-  CreateUserException,
   getUsers,
   deleteUser,
   updateUser,
   loginByEmail,
+  getUserById,
+} = require('./userService');
+
+const {
+  CreateUserException,
   LoginByEmailException,
   GetUsersException,
-  getUserById,
   GetUserByIdException,
   UpdateUserException,
   DeleteUserException,
-} = require('../models/userModel');
+} = require('./userHandleError');
+
+const UserModel = require('../../models/userModel');
 
 class UserController {
   async getUsersList (request, response) {
@@ -27,7 +32,6 @@ class UserController {
       response_result = GetUsersException.success;
       response_status = 200;
     } catch (error) {
-      console.log(error.message);
       if (error.code != null) {
         response_result = error.code;
         response_status = 400;
@@ -79,7 +83,7 @@ class UserController {
     const phone = request.body.phone;
     const email = request.body.email;
     const password = request.body.password;
-  
+
     let response_user = null;
     let response_result = null;
     let response_status = null;
@@ -89,7 +93,9 @@ class UserController {
       response_status = 400;
     } else {
       try {
-        response_user = await createUser(name, phone, email, password);
+        const userModel = new UserModel(name, email, phone, password);
+  
+        response_user = await createUser(userModel);
   
         response_result = CreateUserException.success;
   
